@@ -17,11 +17,6 @@ function arrayChunks<T>(chunkSize: number, array: T[]): T[][] {
 }
 
 async function main() {
-    // const tile = coordinateToTile(-33.694393184522525, 150.88371401485148, 17);
-    // console.log(tile);,
-    // const response = await getPanorama({lat: -33.694993, lng: 150.882269}, 50);
-    // console.log(response);
-
     const points = generateGridPoints();
 
     let streetViews: StreetviewResponse[] = [];
@@ -47,18 +42,6 @@ async function main() {
         }
     }
 
-    // const streetViews = await Promise.all(
-    //     points.map(async (point, i) => {
-    //         if (i % 25 === 0) {
-    //             console.log(`${nowString(new Date())} Getting point ${i}`);
-    //         }
-    //         try {
-    //             return await getPanorama(point, 50);
-    //         } catch (e) {
-    //             console.error(`Problem fetching point ${i}`);
-    //         }
-    //     })
-    // );
     const filtered = streetViews.filter((sv) => sv.status === 'OK');
     const drops = filtered.map(streetviewToDrop);
     // TODO could do incremental output
