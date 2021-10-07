@@ -39,8 +39,24 @@ function getDateTimeString(): string {
     return `${yr}${mth}${day}_${hrs}${min}`;
 }
 
+function nowString(date: Date) {
+    return '[' + date.toLocaleString('en-au', {hour12: false}) + ']';
+}
+
 export async function exportDropsCSV(drops: Drop[]): Promise<void> {
-    // TODO make directory
+    try {
+        await fs.mkdir('./output');
+    } catch (error) {
+        if (error.code !== 'EEXIST') {
+            throw error;
+        }
+    }
+
     const csvString = drops.map((drop) => drop.join(',')).join('\n');
-    await fs.writeFile(`output/${getDateTimeString()}-drops.csv`, csvString, 'utf-8');
+
+    const filename = `${getDateTimeString()}-drops.csv`;
+    const filePath = `./output/${filename}`;
+    await fs.writeFile(filePath, csvString, 'utf-8');
+
+    console.log(`${nowString(new Date())} Wrote drops to '${filePath}'`);
 }
