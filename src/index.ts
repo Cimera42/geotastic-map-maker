@@ -1,6 +1,6 @@
 import {generateGridPoints} from './lib/geometry/bounds_grid';
 import {exportDropsCSV, streetviewToDrop} from './lib/geotastic/drops_csv';
-import {getPanorama, StreetviewResponse} from './lib/google/streetview';
+import {getStreetview, StreetviewResponse} from './lib/google/streetview';
 
 function nowString(date: Date) {
     return '[' + date.toLocaleString('en-au', {hour12: false}) + ']';
@@ -34,7 +34,7 @@ async function main() {
             const batchResult = await Promise.all(
                 batch.map(async (point, i) => {
                     try {
-                        return await getPanorama(point, 50);
+                        return await getStreetview(point, 50);
                     } catch (e) {
                         console.error(`Problem fetching point ${i}`);
                         throw e;

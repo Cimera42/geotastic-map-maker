@@ -2,15 +2,23 @@ import {Point} from '../geometry/common';
 import axios from 'axios';
 import settings from '../../../settings.json'; // TODO move me up
 
-// copyright	"© Google"
-// date	"2020-11"
-// location
-// lat	-33.69424896768029
-// lng	150.8840044588816
-// pano_id	"QERs5iaa6q4xmIkP-QAemw"
-// status	"OK"
+/*
+    Example request and response for finding the nearest streetview to a set of coordinates
 
-// ?location=-33.694393184522525,150.88371401485148&radius=2000&key=AIzaSyDL0PpDsfWrJ7T34IhDgX_XXr4khvTDPjM
+    Example URL: https://maps.googleapis.com/maps/api/streetview/metadata?location=-33.694393184522525,150.88371401485148&radius=2000&key=<apikey>
+
+    Example response:
+    {
+        "copyright": "© Google",
+        "date": "2020-11",
+        "location": {
+            "lat": -33.69424896768029,
+            "lng": 150.8840044588816
+        },
+        "pano_id": "QERs5iaa6q4xmIkP-QAemw",
+        "status": "OK"
+    }
+*/
 
 export interface StreetviewResponse {
     copyright: string;
@@ -20,7 +28,13 @@ export interface StreetviewResponse {
     status: string; // OK | ZERO_RESULTS | REQUEST_DENIED
 }
 
-export async function getPanorama(location: Point, radius: number): Promise<StreetviewResponse> {
+/**
+ * Get nearest streetview to coordinates
+ * @param location Coordinates to search
+ * @param radius Distance streetview must be within
+ * @returns Response from Streetview Static API
+ */
+export async function getStreetview(location: Point, radius: number): Promise<StreetviewResponse> {
     const params = {
         location: `${location.lat},${location.lng}`,
         radius,
