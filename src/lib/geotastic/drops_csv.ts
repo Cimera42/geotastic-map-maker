@@ -1,5 +1,8 @@
 import {StreetviewResponse} from '../google/streetview';
 import {promises as fs} from 'fs';
+import Logger from '../log';
+
+const logger = new Logger('DropsCSV');
 
 type Drop = [
     lat: number,
@@ -9,6 +12,7 @@ type Drop = [
     unknown2: '',
     unknown3: 0,
     unknown4: 0,
+    unknown5: 0,
     panoramaId: string
 ];
 
@@ -20,6 +24,7 @@ export function streetviewToDrop(streetview: StreetviewResponse): Drop {
         'au',
         0,
         '',
+        0,
         0,
         0,
         streetview.pano_id,
@@ -39,13 +44,9 @@ function getDateTimeString(): string {
     return `${yr}${mth}${day}_${hrs}${min}`;
 }
 
-function nowString(date: Date) {
-    return '[' + date.toLocaleString('en-au', {hour12: false}) + ']';
-}
-
 export async function exportDropsCSV(drops: Drop[]): Promise<void> {
     try {
-        await fs.mkdir('./output');
+        await fs.mkdir('./output', {recursive: true});
     } catch (error) {
         if (error.code !== 'EEXIST') {
             throw error;
@@ -58,5 +59,5 @@ export async function exportDropsCSV(drops: Drop[]): Promise<void> {
     const filePath = `./output/${filename}`;
     await fs.writeFile(filePath, csvString, 'utf-8');
 
-    console.log(`${nowString(new Date())} Wrote drops to '${filePath}'`);
+    logger.info(`Wrote ${drops.length} drops to '${filePath}'`);
 }

@@ -1,23 +1,46 @@
+import Logger from '../log';
 import {BoundingBox, Point} from './common';
+import {haversine_distance} from './distance';
 
-const SYDNEY_BOUNDS: BoundingBox = {
-    minLat: -34.083175,
-    minLon: 150.686692,
-    maxLat: -33.671119,
-    maxLon: 151.160498,
-};
+const logger = new Logger('GridGen');
 
-const GRID_POINT_COUNT = 100;
+export function generateGridPoints(bounds: BoundingBox, pointDistance: number): Point[] {
+    const height = haversine_distance(
+        {
+            lat: bounds.minLat,
+            lng: bounds.minLon,
+        },
+        {
+            lat: bounds.maxLat,
+            lng: bounds.minLon,
+        }
+    );
+    const width = haversine_distance(
+        {
+            lat: bounds.minLat,
+            lng: bounds.minLon,
+        },
+        {
+            lat: bounds.minLat,
+            lng: bounds.maxLon,
+        }
+    );
 
-export function generateGridPoints(bounds = SYDNEY_BOUNDS, pointCount = GRID_POINT_COUNT): Point[] {
-    // Use longitude to calculate spacing interval for points
-    // TODO: Maybe use a fixed interval distance than a dynamic one
-    const interval = (bounds.maxLon - bounds.minLon) / pointCount;
+    const horizontalCount = Math.floor(width / pointDistance);
+    const horizontalInterval = (bounds.maxLon - bounds.minLon) / horizontalCount;
+    const verticalCount = Math.floor(height / pointDistance);
+    const verticalInterval = (bounds.maxLat - bounds.minLat) / verticalCount;
 
-    // Starting from { lat: minLat, lng: minLon }, generate approximately GRID_POINT_COUNT * GRID_POINT_COUNT points
+    logger.info(
+        `Generating grid points with ${pointDistance}m gap:` +
+            `\n\tDistance: ${Math.floor(width)}m x ${Math.floor(height)}m` +
+            `\n\tCount: ${horizontalCount} x ${verticalCount} (${horizontalCount * verticalCount})`
+    );
+
+    // Starting from { lat: minLat, lng: minLon }, generate approximately points with pointDistance metres between them
     const points: Point[] = [];
-    for (let curLon = bounds.minLon; curLon <= bounds.maxLon; curLon += interval) {
-        for (let curLat = bounds.minLat; curLat <= bounds.maxLat; curLat += interval) {
+    for (let curLon = bounds.minLon; curLon <= bounds.maxLon; curLon += horizontalInterval) {
+        for (let curLat = bounds.minLat; curLat <= bounds.maxLat; curLat += verticalInterval) {
             points.push({lat: curLat, lng: curLon});
         }
     }
