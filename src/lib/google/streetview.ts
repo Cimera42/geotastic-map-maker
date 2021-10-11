@@ -1,6 +1,6 @@
 import {Point} from '../geometry/common';
 import axios from 'axios';
-import settings from '../../../settings.json'; // TODO move me up
+import settings from '../../../settings.json';
 
 /*
     Example request and response for finding the nearest streetview to a set of coordinates
