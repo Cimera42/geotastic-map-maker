@@ -4,7 +4,7 @@ import {haversine_distance} from './distance';
 
 const logger = new Logger('GridGen');
 
-export function generateGridPoints(bounds: BoundingBox, pointDistance: number): Point[] {
+export function generateGridPoints(bounds: BoundingBox, gap: number): Point[] {
     const height = haversine_distance(
         {
             lat: bounds.minLat,
@@ -26,22 +26,25 @@ export function generateGridPoints(bounds: BoundingBox, pointDistance: number): 
         }
     );
 
-    const horizontalCount = Math.floor(width / pointDistance);
+    const horizontalCount = Math.floor(width / gap);
     const horizontalInterval = (bounds.maxLon - bounds.minLon) / horizontalCount;
-    const verticalCount = Math.floor(height / pointDistance);
+    const verticalCount = Math.floor(height / gap);
     const verticalInterval = (bounds.maxLat - bounds.minLat) / verticalCount;
 
     logger.info(
-        `Generating grid points with ${pointDistance}m gap:` +
+        `Generating grid points with ${gap}m gap:` +
             `\n\tDistance: ${Math.floor(width)}m x ${Math.floor(height)}m` +
             `\n\tCount: ${horizontalCount} x ${verticalCount} (${horizontalCount * verticalCount})`
     );
 
-    // Starting from { lat: minLat, lng: minLon }, generate approximately points with pointDistance metres between them
+    // Starting from { lat: minLat, lng: minLon }, generate points with <gap> metres between them
     const points: Point[] = [];
-    for (let curLon = bounds.minLon; curLon <= bounds.maxLon; curLon += horizontalInterval) {
-        for (let curLat = bounds.minLat; curLat <= bounds.maxLat; curLat += verticalInterval) {
-            points.push({lat: curLat, lng: curLon});
+    for (let i = 0; i < horizontalCount; i++) {
+        for (let j = 0; j < verticalCount; j++) {
+            points.push({
+                lat: bounds.minLat + verticalInterval * j,
+                lng: bounds.minLon + horizontalInterval * i,
+            });
         }
     }
 

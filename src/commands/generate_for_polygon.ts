@@ -31,33 +31,52 @@ const logger = new Logger('Polygon');
 // ];
 
 async function loadPolygonFromCSV(path: string): Promise<Point[]> {
-    const rawPolygonPoints = await fs.readFile(path, 'utf8');
-    // TODO optional CSV headers
-    const parsedPolygonPoints = rawPolygonPoints
-        .split('\n')
-        .filter((v) => v)
-        .slice(1)
-        .map((line): Point => {
-            const parts = line.split(',');
-            return {
-                lat: parseFloat(parts[0]),
-                lng: parseFloat(parts[1]),
-            };
-        });
+    const rawData = await fs.readFile(path, 'utf8');
+
+    // Naive/simple CSV parser
+    let lines = rawData.split(/\r?\n/);
+    if (!lines.length) {
+        throw new Error(
+            'Empty CSV, see `polygon.template.csv` or README.md for the correct format.'
+        );
+    }
+
+    const pointRegex = /^(?<lat>-?\d+(\.\d*)?),(?<lng>-?\d+(\.\d*)?)$/;
+    if (!pointRegex.test(lines[0])) {
+        lines = lines.slice(1);
+    }
+    while (lines[lines.length - 1] === '') {
+        lines = lines.slice(0, -1);
+    }
+
+    const matchedLines = lines.map((v) => v.match(pointRegex));
+    const allMatch = matchedLines.every((v) => v);
+    if (!allMatch) {
+        throw new Error(
+            'Misformed CSV, see `polygon.template.csv` or README.md for the correct format.'
+        );
+    }
+
+    const parsedPolygonPoints = matchedLines.map((pointMatch): Point => {
+        return {
+            lat: parseFloat(pointMatch.groups.lat),
+            lng: parseFloat(pointMatch.groups.lng),
+        };
+    });
 
     logger.info(`Loaded polygon with ${parsedPolygonPoints.length} points.`);
 
     return parsedPolygonPoints;
 }
 
-interface Args {
+interface PolygonArgs {
     inputPath: string;
     outputFilepath?: string;
     gap: number;
     name: string;
 }
 
-async function generateForPolygon(args: Args): Promise<void> {
+async function generateForPolygon(args: PolygonArgs): Promise<void> {
     try {
         const polygon = await loadPolygonFromCSV(args.inputPath);
         const bounds = getBounds(polygon);

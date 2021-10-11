@@ -16,14 +16,14 @@ async function loadBoundsFromJSON(path: string): Promise<BoundingBox> {
     return bounds;
 }
 
-interface Args {
+interface BoxArgs {
     inputPath: string;
     outputFilepath?: string;
     gap: number;
     name?: string;
 }
 
-async function generateForBox(args: Args): Promise<void> {
+async function generateForBox(args: BoxArgs): Promise<void> {
     try {
         const bounds = await loadBoundsFromJSON(args.inputPath);
         const points = generateGridPoints(bounds, args.gap);
