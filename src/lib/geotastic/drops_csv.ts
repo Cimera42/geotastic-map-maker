@@ -8,11 +8,11 @@ type Drop = [
     lat: number,
     lng: number,
     countryCode: string,
-    unknown1: 0,
-    unknown2: '',
-    unknown3: 0,
-    unknown4: 0,
-    unknown5: 0,
+    wikipediaPageId: string,
+    title: string,
+    heading: number,
+    pitch: number,
+    zoom: number,
     panoramaId: string
 ];
 
@@ -22,7 +22,7 @@ export function streetviewToDrop(streetview: StreetviewResponse): Drop {
         streetview.location.lat,
         streetview.location.lng,
         'au',
-        0,
+        '0',
         '',
         0,
         0,
