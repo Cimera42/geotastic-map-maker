@@ -1001,6 +1001,11 @@ path-type@^4.0.0:
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-4.0.0.tgz#84ed01c0a7ba380afe09d90a8c180dcd9d03043b"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
 
+path-validation@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/path-validation/-/path-validation-0.2.3.tgz#70a3e5762b83e531397942854d44c99e83c8818e"
+  integrity sha512-SSMuyxeFiYKggQDvDVS+Fpy8cJXr8cOAjIGlwg8PN0xRCLd3gg5JwsNFkD4DUxaMMlbs4p9w0xQN7rGuW/QzVA==
+
 picomatch@^2.2.3:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.0.tgz#f1f061de8f6a4bf022892e2d128234fb98302972"

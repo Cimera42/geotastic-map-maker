@@ -4,6 +4,7 @@ import Logger from '../lib/log';
 import {Point} from '../lib/geometry/common';
 import {getBounds, insideComplex} from '../lib/geometry/point_inside';
 import {generateGridPoints} from '../lib/geometry/bounds_grid';
+import {exportDropsCSV} from '../lib/geotastic/drops_csv';
 
 const logger = new Logger('Polygon');
 
@@ -49,15 +50,26 @@ async function loadPolygonFromCSV(path: string): Promise<Point[]> {
     return parsedPolygonPoints;
 }
 
-async function generateForPolygon(path: string, pointDistance: number): Promise<void> {
+interface Args {
+    inputPath: string;
+    outputFilepath?: string;
+    gap: number;
+    name: string;
+}
+
+async function generateForPolygon(args: Args): Promise<void> {
     try {
-        const polygon = await loadPolygonFromCSV(path);
+        const polygon = await loadPolygonFromCSV(args.inputPath);
         const bounds = getBounds(polygon);
 
-        const points = generateGridPoints(bounds, pointDistance);
+        const points = generateGridPoints(bounds, args.gap);
         const filteredPoints = points.filter((p) => insideComplex(polygon, p));
 
-        generateDrops(filteredPoints);
+        const drops = await generateDrops(filteredPoints);
+        await exportDropsCSV(drops, {
+            name: args.name,
+            outputFilepath: args.outputFilepath,
+        });
     } catch (e) {
         logger.exception(e);
         return;

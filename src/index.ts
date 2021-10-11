@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import generateForBox from './commands/generate_for_box';
 import generateForPolygon from './commands/generate_for_polygon';
+import pathValidation from 'path-validation';
 import {defaultGap} from './lib/consts';
 import Logger from './lib/log';
 
@@ -33,6 +34,7 @@ const helpMessage = [
     alignToSides('  -s, --shape    Boundary shape to use', `[${shapeTypesString}] [required]`),
     alignToSides('  -i, --input    Path to shape input file', '[string] [required]'),
     alignToSides('  -o, --output   Path to output file', '[string] [optional]'),
+    alignToSides('  -n, --name     Filename suffix if output not specified', '[string] [optional]'),
     alignToSides(
         '  -g, --gap      Gap between grid points in metres',
         `[number] [default: ${defaultGap}]`
@@ -51,7 +53,7 @@ function validateShape(value: string): ShapeType {
     throw new ArgError(`Shape must be one of [${shapeTypesString}].`, 'ARG_INVALID_CHOICE');
 }
 
-function validateFile(value: string): string {
+function validateFileExists(value: string): string {
     const filepath = path.resolve(value);
     try {
         fs.accessSync(filepath, fs.constants.F_OK);
@@ -66,19 +68,34 @@ function validateFile(value: string): string {
     return filepath;
 }
 
+function validateCanCreateFile(value: string): string {
+    const absolute = path.resolve(value);
+
+    const isValidPath = pathValidation.isAbsolutePath(absolute, path.sep);
+    if (!isValidPath) {
+        throw new ArgError(`Invalid path to create file: '${value}'.`, 'ARG_INVALID_PATH');
+    }
+
+    return absolute;
+}
+
 async function main() {
     const [args, argErrors] = arg(
         {
             '--help': Boolean,
             '--version': Boolean,
             '--shape': validateShape,
-            '--input': validateFile,
+            '--input': validateFileExists,
+            '--output': validateCanCreateFile,
             '--gap': Number,
+            '--name': String,
 
             '-h': '--help',
             '-g': '--gap',
             '-s': '--shape',
             '-i': '--input',
+            '-o': '--output',
+            '-n': '--name',
         },
         {
             argv: process.argv.slice(2),
@@ -120,14 +137,16 @@ async function main() {
     const gap = args['--gap'] || defaultGap;
     const shape = args['--shape'];
     const filepath = args['--input'];
+    const outputFilepath = args['--output'];
+    const name = args['--name'];
 
     switch (shape) {
         case 'box':
-            generateForBox(filepath, gap);
+            generateForBox({inputPath: filepath, outputFilepath, gap, name});
             break;
 
         case 'polygon':
-            generateForPolygon(filepath, gap);
+            generateForPolygon({inputPath: filepath, outputFilepath, gap, name});
             break;
     }
 }
