@@ -5,6 +5,7 @@ import {Point} from '../lib/geometry/common';
 import {getBounds, insideComplex} from '../lib/geometry/point_inside';
 import {generateGridPoints} from '../lib/geometry/bounds_grid';
 import {exportDropsCSV} from '../lib/geotastic/drops_csv';
+import path from 'path';
 
 const logger = new Logger('Polygon');
 
@@ -30,14 +31,16 @@ const logger = new Logger('Polygon');
 //     {lng: 150.2558899, lat: -33.7722983},
 // ];
 
-async function loadPolygonFromCSV(path: string): Promise<Point[]> {
-    const rawData = await fs.readFile(path, 'utf8');
+async function loadPolygonFromCSV(filepath: string): Promise<Point[]> {
+    const rawData = await fs.readFile(filepath, 'utf8');
 
     // Naive/simple CSV parser
     let lines = rawData.split(/\r?\n/);
     if (!lines.length) {
         throw new Error(
-            'Empty CSV, see `polygon.template.csv` or README.md for the correct format.'
+            `Empty CSV ('${path.basename(
+                filepath
+            )}'), see 'polygon.template.csv' or README.md for the correct format.`
         );
     }
 
@@ -53,7 +56,9 @@ async function loadPolygonFromCSV(path: string): Promise<Point[]> {
     const allMatch = matchedLines.every((v) => v);
     if (!allMatch) {
         throw new Error(
-            'Misformed CSV, see `polygon.template.csv` or README.md for the correct format.'
+            `Misformed CSV ('${path.basename(
+                filepath
+            )}'), see 'polygon.template.csv' or README.md for the correct format.`
         );
     }
 

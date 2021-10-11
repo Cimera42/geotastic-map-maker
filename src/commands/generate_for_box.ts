@@ -4,16 +4,29 @@ import {promises as fs} from 'fs';
 import Logger from '../lib/log';
 import {generateGridPoints} from '../lib/geometry/bounds_grid';
 import {exportDropsCSV} from '../lib/geotastic/drops_csv';
+import path from 'path';
 
 const logger = new Logger('Bounds');
 
-async function loadBoundsFromJSON(path: string): Promise<BoundingBox> {
-    const rawBoundsJSON = await fs.readFile(path, 'utf8');
-    const bounds: BoundingBox = JSON.parse(rawBoundsJSON);
+async function loadBoundsFromJSON(filepath: string): Promise<BoundingBox> {
+    const rawBoundsJSON = await fs.readFile(filepath, 'utf8');
+    try {
+        const bounds: BoundingBox = JSON.parse(rawBoundsJSON);
 
-    logger.info(`Loaded bounding box.`);
+        logger.info(`Loaded bounding box.`);
 
-    return bounds;
+        return bounds;
+    } catch (e) {
+        if (e instanceof SyntaxError) {
+            throw new Error(
+                `Misformed JSON ('${path.basename(
+                    filepath
+                )}'), see 'bounds.template.json' or README.md for the correct format.`
+            );
+        } else {
+            throw e;
+        }
+    }
 }
 
 interface BoxArgs {
