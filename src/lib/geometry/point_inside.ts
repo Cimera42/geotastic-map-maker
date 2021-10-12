@@ -33,6 +33,12 @@ const crossingDirection = (p0: Point, p1: Point, point: Point): CrossingDirectio
     return CrossingDirection.NOT_CROSSING;
 };
 
+/**
+ * Check if point is inside a complex polygon using the Winding Number Algorithm
+ * @param polygon Polygon to check
+ * @param point Point to check
+ * @returns true/false
+ */
 export const insideComplex = (polygon: Point[], point: Point): boolean => {
     let windingOrder = 0;
     polygon.forEach((p, i) => {
