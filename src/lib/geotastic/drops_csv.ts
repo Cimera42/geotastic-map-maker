@@ -1,51 +1,43 @@
-import {StreetviewResponse} from '../google/streetview';
 import {promises as fs} from 'fs';
+import Logger from '../log';
+import path from 'path';
+import {getFormattedDate} from '../utils';
 
-type Drop = [
+const logger = new Logger('DropsCSV');
+
+export type Drop = [
     lat: number,
     lng: number,
     countryCode: string,
-    unknown1: 0,
-    unknown2: '',
-    unknown3: 0,
-    unknown4: 0,
+    wikipediaPageId: string,
+    title: string,
+    heading: number,
+    pitch: number,
+    zoom: number,
     panoramaId: string
 ];
 
-export function streetviewToDrop(streetview: StreetviewResponse): Drop {
-    // TODO dont hardcode country, work out what 0's are
-    return [
-        streetview.location.lat,
-        streetview.location.lng,
-        'au',
-        0,
-        '',
-        0,
-        0,
-        streetview.pano_id,
-    ];
+function getFilenameDatetime(): string {
+    return getFormattedDate(new Date(), 'YMD_hm');
 }
 
-function getDateTimeString(): string {
-    const now = new Date();
-
-    const yr = now.getFullYear();
-    const mth = now.getMonth().toString().padStart(2, '0');
-    const day = now.getDate().toString().padStart(2, '0');
-
-    const hrs = now.getHours().toString().padStart(2, '0');
-    const min = now.getMinutes().toString().padStart(2, '0');
-
-    return `${yr}${mth}${day}_${hrs}${min}`;
-}
-
-function nowString(date: Date) {
-    return '[' + date.toLocaleString('en-au', {hour12: false}) + ']';
-}
-
-export async function exportDropsCSV(drops: Drop[]): Promise<void> {
+/**
+ * Export list of Geotastic drops to CSV
+ * @param drops List of drops
+ * @param options Options for output file
+ */
+export async function exportDropsCSV(
+    drops: Drop[],
+    options: {
+        name?: string;
+        outputFilepath?: string;
+    }
+): Promise<void> {
+    const dirname = options.outputFilepath ? path.dirname(options.outputFilepath) : './output';
     try {
-        await fs.mkdir('./output');
+        await fs.mkdir(dirname, {
+            recursive: true,
+        });
     } catch (error) {
         if (error.code !== 'EEXIST') {
             throw error;
@@ -54,9 +46,11 @@ export async function exportDropsCSV(drops: Drop[]): Promise<void> {
 
     const csvString = drops.map((drop) => drop.join(',')).join('\n');
 
-    const filename = `${getDateTimeString()}-drops.csv`;
-    const filePath = `./output/${filename}`;
+    const filename = options.outputFilepath
+        ? path.basename(options.outputFilepath)
+        : `${getFilenameDatetime()}-${options.name || 'drops'}.csv`;
+    const filePath = path.join(dirname, filename);
     await fs.writeFile(filePath, csvString, 'utf-8');
 
-    console.log(`${nowString(new Date())} Wrote drops to '${filePath}'`);
+    logger.info(`Wrote ${drops.length} drops to '${filePath}'`);
 }

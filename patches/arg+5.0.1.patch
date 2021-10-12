@@ -1,0 +1,146 @@
+diff --git a/node_modules/arg/index.d.ts b/node_modules/arg/index.d.ts
+index 09c3a98..6a46c48 100644
+--- a/node_modules/arg/index.d.ts
++++ b/node_modules/arg/index.d.ts
+@@ -3,7 +3,7 @@ declare const flagSymbol: unique symbol;
+ declare function arg<T extends arg.Spec>(
+ 	spec: T,
+ 	options?: arg.Options
+-): arg.Result<T>;
++): [arg.Result<T>, {[key: string]: arg.ArgError}];
+ 
+ declare namespace arg {
+ 	export function flag<T>(fn: T): T & { [flagSymbol]: true };
+@@ -38,6 +38,7 @@ declare namespace arg {
+ 		argv?: string[];
+ 		permissive?: boolean;
+ 		stopAtPositional?: boolean;
++		onlyThrowDevExceptions?: boolean;
+ 	}
+ }
+ 
+diff --git a/node_modules/arg/index.js b/node_modules/arg/index.js
+index 3f60f4c..107d36f 100644
+--- a/node_modules/arg/index.js
++++ b/node_modules/arg/index.js
+@@ -15,7 +15,8 @@ function arg(
+ 	{
+ 		argv = process.argv.slice(2),
+ 		permissive = false,
+-		stopAtPositional = false
++		stopAtPositional = false,
++		onlyThrowDevExceptions = false,
+ 	} = {}
+ ) {
+ 	if (!opts) {
+@@ -26,6 +27,7 @@ function arg(
+ 	}
+ 
+ 	const result = { _: [] };
++	const errors = {};
+ 
+ 	const aliases = {};
+ 	const handlers = {};
+@@ -129,24 +131,45 @@ function arg(
+ 						result._.push(arg);
+ 						continue;
+ 					} else {
+-						throw new ArgError(
++						const err = new ArgError(
+ 							`unknown or unexpected option: ${originalArgName}`,
+ 							'ARG_UNKNOWN_OPTION'
+-						);
++						)
++						if(onlyThrowDevExceptions) {
++							errors[argName] = err;
++							continue;
++						} else {
++							throw err;
++						}
+ 					}
+ 				}
+ 
+ 				const [type, isFlag] = handlers[argName];
+ 
+ 				if (!isFlag && j + 1 < separatedArguments.length) {
+-					throw new ArgError(
++					const err = new ArgError(
+ 						`option requires argument (but was followed by another short argument): ${originalArgName}`,
+ 						'ARG_MISSING_REQUIRED_SHORTARG'
+ 					);
++					if(onlyThrowDevExceptions) {
++						errors[argName] = err;
++						continue;
++					} else {
++						throw err;
++					}
+ 				}
+ 
+ 				if (isFlag) {
+-					result[argName] = type(true, argName, result[argName]);
++					try {
++						result[argName] = type(true, argName, result[argName]);
++					} catch (err) {
++						if(onlyThrowDevExceptions) {
++							errors[argName] = err;
++							continue;
++						} else {
++							throw err;
++						}
++					}
+ 				} else if (argStr === undefined) {
+ 					if (
+ 						argv.length < i + 2 ||
+@@ -161,16 +184,40 @@ function arg(
+ 					) {
+ 						const extended =
+ 							originalArgName === argName ? '' : ` (alias for ${argName})`;
+-						throw new ArgError(
++						const err = new ArgError(
+ 							`option requires argument: ${originalArgName}${extended}`,
+ 							'ARG_MISSING_REQUIRED_LONGARG'
+ 						);
++						if(onlyThrowDevExceptions) {
++							errors[argName] = err;
++							continue;
++						} else {
++							throw err;
++						}
+ 					}
+ 
+-					result[argName] = type(argv[i + 1], argName, result[argName]);
++					try {
++						result[argName] = type(argv[i + 1], argName, result[argName]);
++					} catch (err) {
++						if(onlyThrowDevExceptions) {
++							errors[argName] = err;
++							continue;
++						} else {
++							throw err;
++						}
++					}
+ 					++i;
+ 				} else {
+-					result[argName] = type(argStr, argName, result[argName]);
++					try {
++						result[argName] = type(argStr, argName, result[argName]);
++					} catch (err) {
++						if(onlyThrowDevExceptions) {
++							errors[argName] = err;
++							continue;
++						} else {
++							throw err;
++						}
++					}
+ 				}
+ 			}
+ 		} else {
+@@ -178,7 +225,7 @@ function arg(
+ 		}
+ 	}
+ 
+-	return result;
++	return [result, errors];
+ }
+ 
+ arg.flag = (fn) => {
