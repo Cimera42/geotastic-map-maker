@@ -31,7 +31,7 @@ Follow the below instructions to create your desired shape.
 A sample bounding box file can be found in the `input` folder named `box.template.json`.
 This file defines the top, bottom, left, and right of the bounding box in latitude and longitude.
 
-```json
+```
 {
     "minLat": <latitude of bottom of box>,
     "minLon": <longitude of left of box>,
