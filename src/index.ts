@@ -101,6 +101,12 @@ async function main() {
     const outputFilepath = args['--output'];
     const name = args['--name'];
 
+    if (gap < 100) {
+        logger.warn(
+            'Using a small gap can create an extremely large number of points, which will take a long time to process.'
+        );
+    }
+
     switch (shape) {
         case 'box':
             await generateForBox({inputPath: filepath, outputFilepath, gap, name});
