@@ -1,7 +1,7 @@
-diff --git a/node_modules/arg/index.d.ts b/node_modules/arg/index.d.ts
-index 09c3a98..6a46c48 100644
---- a/node_modules/arg/index.d.ts
-+++ b/node_modules/arg/index.d.ts
+diff --git a/index.d.ts b/index.d.ts
+index 09c3a9881042cfdb6215e8f849b4cccf78cfa30c..6a46c4826a69e33f876fcbbb65a4af45c6173265 100644
+--- a/index.d.ts
++++ b/index.d.ts
 @@ -3,7 +3,7 @@ declare const flagSymbol: unique symbol;
  declare function arg<T extends arg.Spec>(
  	spec: T,
@@ -19,10 +19,10 @@ index 09c3a98..6a46c48 100644
  	}
  }
  
-diff --git a/node_modules/arg/index.js b/node_modules/arg/index.js
-index 3f60f4c..107d36f 100644
---- a/node_modules/arg/index.js
-+++ b/node_modules/arg/index.js
+diff --git a/index.js b/index.js
+index 3f60f4cadc95780cfbb37bf27e972a864c69cbff..107d36f4d8eace9760f856b0a2096037b6c6f357 100644
+--- a/index.js
++++ b/index.js
 @@ -15,7 +15,8 @@ function arg(
  	{
  		argv = process.argv.slice(2),
