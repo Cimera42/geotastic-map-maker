@@ -5,6 +5,7 @@ import generateForPolygon from './commands/generate_for_polygon';
 import {validateCanCreateFile, validateFileExists, validateShape} from './lib/arg_validation';
 import {defaultGap, shapeTypesString} from './lib/consts';
 import Logger from './lib/log';
+import packageJson from '../package.json';
 
 const logger = new Logger('Index');
 
@@ -65,7 +66,7 @@ async function main() {
     );
 
     if (args['--version']) {
-        console.log('1.0.0');
+        console.log(packageJson.version);
         return;
     }
 
