@@ -5,7 +5,7 @@ A script to generate maps files for importing into [Geotastic](https://geotastic
 |Table of Contents|
 |-|
 |[Installation](#installation)|
-|[Run](#run)|
+|[Usage](#usage)|
 |[Import into Geotastic](#import-into-geotastic)|
 |[Theory of operation](#theory-of-operation)|
 
@@ -18,7 +18,7 @@ A script to generate maps files for importing into [Geotastic](https://geotastic
 5. Add your Google API key in `settings.json`
    - Google Street View Static API must be enabled
 
-## Run
+## Usage
 
 ### Creating a boundary shape
 
