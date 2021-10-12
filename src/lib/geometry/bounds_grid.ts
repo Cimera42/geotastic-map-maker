@@ -26,9 +26,9 @@ export function generateGridPoints(bounds: BoundingBox, gap: number): Point[] {
         }
     );
 
-    const horizontalCount = Math.floor(width / gap);
+    const horizontalCount = Math.ceil(width / gap);
     const horizontalInterval = (bounds.maxLon - bounds.minLon) / horizontalCount;
-    const verticalCount = Math.floor(height / gap);
+    const verticalCount = Math.ceil(height / gap);
     const verticalInterval = (bounds.maxLat - bounds.minLat) / verticalCount;
 
     logger.info(
