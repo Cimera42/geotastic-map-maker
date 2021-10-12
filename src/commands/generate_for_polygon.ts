@@ -44,7 +44,7 @@ async function loadPolygonFromCSV(filepath: string): Promise<Point[]> {
         );
     }
 
-    const pointRegex = /^(?<lat>-?\d+(\.\d*)?),(?<lng>-?\d+(\.\d*)?)$/;
+    const pointRegex = /^(?<lat>-?\d+(\.\d*)?), *(?<lng>-?\d+(\.\d*)?)$/;
     if (!pointRegex.test(lines[0])) {
         lines = lines.slice(1);
     }
