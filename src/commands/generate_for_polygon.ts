@@ -78,7 +78,7 @@ interface PolygonArgs {
     inputPath: string;
     outputFilepath?: string;
     gap: number;
-    name: string;
+    name?: string;
 }
 
 async function generateForPolygon(args: PolygonArgs): Promise<void> {

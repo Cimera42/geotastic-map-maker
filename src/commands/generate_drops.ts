@@ -1,20 +1,11 @@
 import {batchSize, streetviewDistance} from '../lib/consts';
 import {Point} from '../lib/geometry/common';
-import {Drop, exportDropsCSV, streetviewToDrop} from '../lib/geotastic/drops_csv';
+import {Drop, streetviewToDrop} from '../lib/geotastic/drops_csv';
 import {getStreetview, StreetviewResponse} from '../lib/google/streetview';
 import Logger from '../lib/log';
+import {arrayChunks} from '../lib/utils';
 
 const logger = new Logger('GenerateDrops');
-
-function arrayChunks<T>(chunkSize: number, array: T[]): T[][] {
-    const chunks: T[][] = [];
-    let i: number;
-    let j: number;
-    for (i = 0, j = array.length; i < j; i += chunkSize) {
-        chunks.push(array.slice(i, i + chunkSize));
-    }
-    return chunks;
-}
 
 export default async function generateDrops(dropPoints: Point[]): Promise<Drop[]> {
     let streetViews: StreetviewResponse[] = [];
