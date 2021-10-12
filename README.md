@@ -98,8 +98,8 @@ yarn start --shape polygon --input ./input/polygon.template.csv --output ./outpu
 
 To create a custom map and import drop data:
 
-1. Login to Geotastic
-2. Click on your profile in the top-right, and choose "Custom Map Editor"
+1. Login to [Geotastic](https://geotastic.de)
+2. Click on your profile in the top-right, and choose ["Custom Map Editor"](https://geotastic.de/custom-map-editor)
 3. Click "CREATE NEW MAP" and enter the desired details
    - The overall size of the map is printed when the script runs. I'd recommended setting the `Default Distance Threshold` to half that size.
 4. Right click the new map and select "Import drop data"
