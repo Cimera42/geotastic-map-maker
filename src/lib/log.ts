@@ -1,7 +1,8 @@
 import chalk from 'chalk';
+import {getFormattedDate} from './utils';
 
-function nowString(date: Date) {
-    return '[' + date.toLocaleString('en-au', {hour12: false}) + ']';
+function nowString(): string {
+    return `[${getFormattedDate(new Date(), 'D/M/Y, h:m:s')}]`;
 }
 
 enum LogSeverity {
@@ -15,10 +16,9 @@ class Logger {
     constructor(private readonly loggerName: string) {}
 
     public log(message: string, severity: LogSeverity): void {
-        const date = new Date();
         const levelName = LogSeverity[severity];
 
-        const logInfoStr = `${nowString(date)} [${levelName}] ${this.loggerName}: `;
+        const logInfoStr = `${nowString()} [${levelName}] ${this.loggerName}: `;
 
         const tabbedMessage = message.replace(/\n\t/g, `\n${' '.repeat(logInfoStr.length)}`);
 

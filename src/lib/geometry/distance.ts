@@ -1,5 +1,11 @@
 import {Point} from './common';
 
+/**
+ * Calculate the haversine distance between two points on the globe
+ * @param p1 First point
+ * @param p2 Second point
+ * @returns Distance between the two points in metres
+ */
 export function haversine_distance(p1: Point, p2: Point): number {
     const R = 6378.137; // Radius of earth in KM
     const dLat = (p2.lat * Math.PI) / 180 - (p1.lat * Math.PI) / 180;

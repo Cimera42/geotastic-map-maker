@@ -1,7 +1,7 @@
-import {StreetviewResponse} from '../google/streetview';
 import {promises as fs} from 'fs';
 import Logger from '../log';
 import path from 'path';
+import {getFormattedDate} from '../utils';
 
 const logger = new Logger('DropsCSV');
 
@@ -17,38 +17,19 @@ export type Drop = [
     panoramaId: string
 ];
 
-export function streetviewToDrop(streetview: StreetviewResponse): Drop {
-    // TODO dont hardcode country
-    return [
-        streetview.location.lat,
-        streetview.location.lng,
-        'au',
-        '0',
-        '',
-        0,
-        0,
-        0,
-        streetview.pano_id,
-    ];
+function getFilenameDatetime(): string {
+    return getFormattedDate(new Date(), 'YMD_hm');
 }
 
-function getDateTimeString(): string {
-    const now = new Date();
-
-    const yr = now.getFullYear();
-    const mth = now.getMonth().toString().padStart(2, '0');
-    const day = now.getDate().toString().padStart(2, '0');
-
-    const hrs = now.getHours().toString().padStart(2, '0');
-    const min = now.getMinutes().toString().padStart(2, '0');
-
-    return `${yr}${mth}${day}_${hrs}${min}`;
-}
-
+/**
+ * Export list of Geotastic drops to CSV
+ * @param drops List of drops
+ * @param options Options for output file
+ */
 export async function exportDropsCSV(
     drops: Drop[],
     options: {
-        name: string;
+        name?: string;
         outputFilepath?: string;
     }
 ): Promise<void> {
@@ -67,7 +48,7 @@ export async function exportDropsCSV(
 
     const filename = options.outputFilepath
         ? path.basename(options.outputFilepath)
-        : `${getDateTimeString()}-${options.name || 'drops'}.csv`;
+        : `${getFilenameDatetime()}-${options.name || 'drops'}.csv`;
     const filePath = path.join(dirname, filename);
     await fs.writeFile(filePath, csvString, 'utf-8');
 

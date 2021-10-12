@@ -1,12 +1,37 @@
 import {batchSize, streetviewDistance} from '../lib/consts';
 import {Point} from '../lib/geometry/common';
-import {Drop, streetviewToDrop} from '../lib/geotastic/drops_csv';
+import {Drop} from '../lib/geotastic/drops_csv';
 import {getStreetview, StreetviewResponse} from '../lib/google/streetview';
 import Logger from '../lib/log';
 import {arrayChunks} from '../lib/utils';
 
 const logger = new Logger('GenerateDrops');
 
+/**
+ * Convert Street View data into a Geotastic Drop CSV row
+ * @param streetview Response from Street View Metadata API
+ * @returns Formatted drop
+ */
+export function streetviewToDrop(streetview: StreetviewResponse): Drop {
+    // TODO dont hardcode country
+    return [
+        streetview.location.lat,
+        streetview.location.lng,
+        'au',
+        '0',
+        '',
+        0,
+        0,
+        0,
+        streetview.pano_id,
+    ];
+}
+
+/**
+ * Locate Street Views for a list of points and convert into Geotastic Drops
+ * @param dropPoints List of points to find Street Views for
+ * @returns List of Geotastic Drops
+ */
 export default async function generateDrops(dropPoints: Point[]): Promise<Drop[]> {
     let streetViews: StreetviewResponse[] = [];
     const batches = arrayChunks(batchSize, dropPoints);

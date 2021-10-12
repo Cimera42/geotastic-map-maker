@@ -4,6 +4,12 @@ import {haversine_distance} from './distance';
 
 const logger = new Logger('GridGen');
 
+/**
+ * Generate a regular grid of points within a bounding box
+ * @param bounds Bounding box to generate grid within
+ * @param gap Gap between points in metres
+ * @returns List of points
+ */
 export function generateGridPoints(bounds: BoundingBox, gap: number): Point[] {
     const height = haversine_distance(
         {

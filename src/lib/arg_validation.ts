@@ -6,8 +6,8 @@ import {ShapeType, shapeTypes, shapeTypesString} from './consts';
 
 /**
  * Validate argument is a valid shape
- * @param value
- * @returns
+ * @param value Shape name to validate
+ * @returns Valid shape
  */
 export function validateShape(value: string): ShapeType {
     if (value === shapeTypes[0] || value === shapeTypes[1]) {
@@ -16,21 +16,41 @@ export function validateShape(value: string): ShapeType {
     throw new ArgError(`Shape must be one of [${shapeTypesString}].`, 'ARG_INVALID_CHOICE');
 }
 
+/**
+ * Validate a given file exists and can be read
+ * @param value File path to check
+ * @returns Valid file path
+ */
 export function validateFileExists(value: string): string {
     const filepath = path.resolve(value);
+
     try {
-        fs.accessSync(filepath, fs.constants.F_OK);
-        try {
-            fs.accessSync(filepath, fs.constants.R_OK);
-        } catch (e) {
+        fs.accessSync(filepath, fs.constants.R_OK);
+    } catch (e) {
+        if (e.code === 'ENOENT') {
+            throw new ArgError(`File '${value}' does not exist.`, 'ARG_INVALID_FILE');
+        } else {
             throw new ArgError(`Cannot read file '${value}'.`, 'ARG_INVALID_FILE');
         }
-    } catch (e) {
-        throw new ArgError(`File '${value}' does not exist.`, 'ARG_INVALID_FILE');
     }
+
+    try {
+        const stats = fs.statSync(filepath);
+        if (!stats.isFile()) {
+            throw new ArgError(`'${value}' is a directory, not a file.`, 'ARG_PROVIDED_DIRECTORY');
+        }
+    } catch (e) {
+        throw e;
+    }
+
     return filepath;
 }
 
+/**
+ * Validate that the filepath is valid
+ * @param value File path to check
+ * @returns Valid file path
+ */
 export function validateCanCreateFile(value: string): string {
     const absolute = path.resolve(value);
 
