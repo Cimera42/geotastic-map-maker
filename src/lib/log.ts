@@ -1,3 +1,5 @@
+import chalk from 'chalk';
+
 function nowString(date: Date) {
     return '[' + date.toLocaleString('en-au', {hour12: false}) + ']';
 }
@@ -23,9 +25,9 @@ class Logger {
         const outStr = `${logInfoStr}${tabbedMessage}`;
 
         if (severity == LogSeverity.ERROR) {
-            console.error(outStr);
+            console.error(chalk.red(outStr));
         } else if (severity == LogSeverity.WARN) {
-            console.warn(outStr);
+            console.warn(chalk.yellow(outStr));
         } else {
             console.log(outStr);
         }
