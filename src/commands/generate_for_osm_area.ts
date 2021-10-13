@@ -56,8 +56,12 @@ async function generateForOSMArea(args: OSMAreaArgs): Promise<void> {
 
             const points = generateGridPoints(bounds, args.gap);
             const filteredPoints = points.filter((p) => insideComplex(polygon, p));
+            logger.info(
+                `Filtered ${points.length} to ${filteredPoints.length} points with polygon shape.`
+            );
             return [...prevPoints, ...filteredPoints];
         }, []);
+        logger.info(`Overall there are ${generatedPoints.length} points`);
 
         const drops = await generateDrops(generatedPoints);
         await exportDropsCSV(drops, {

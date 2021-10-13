@@ -88,6 +88,9 @@ async function generateForPolygon(args: PolygonArgs): Promise<void> {
 
         const points = generateGridPoints(bounds, args.gap);
         const filteredPoints = points.filter((p) => insideComplex(polygon, p));
+        logger.info(
+            `Filtered ${points.length} to ${filteredPoints.length} points with polygon shape.`
+        );
 
         const drops = await generateDrops(filteredPoints);
         await exportDropsCSV(drops, {
