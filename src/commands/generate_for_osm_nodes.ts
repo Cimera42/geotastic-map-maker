@@ -22,7 +22,7 @@ async function loadPointsFromOSM(filepath: string): Promise<Point[]> {
 
     const points = nodes.map((v): Point => ({lat: v.lat, lng: v.lon}));
 
-    logger.info(`Loaded ${points.length} point${points.length === 1 ? '' : 's'} from OSM nodes.}`);
+    logger.info(`Loaded ${points.length} point${points.length === 1 ? '' : 's'} from OSM nodes.`);
 
     return points;
 }
