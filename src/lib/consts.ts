@@ -12,6 +12,6 @@ export const streetviewDistance = 50;
 export const defaultGap = 500;
 
 // Shape types for CLI
-export const shapeTypes = ['box', 'polygon'] as const;
+export const shapeTypes = ['box', 'polygon', 'osmarea'] as const;
 export const shapeTypesString = shapeTypes.map((v) => `'${v}'`).join(', ');
 export type ShapeType = typeof shapeTypes[number];

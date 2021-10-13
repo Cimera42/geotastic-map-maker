@@ -10,8 +10,10 @@ import {ShapeType, shapeTypes, shapeTypesString} from './consts';
  * @returns Valid shape
  */
 export function validateShape(value: string): ShapeType {
-    if (value === shapeTypes[0] || value === shapeTypes[1]) {
-        return value;
+    for (let i = 0; i < shapeTypes.length; i++) {
+        if (value === shapeTypes[i]) {
+            return value;
+        }
     }
     throw new ArgError(`Shape must be one of [${shapeTypesString}].`, 'ARG_INVALID_CHOICE');
 }
