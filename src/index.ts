@@ -7,6 +7,7 @@ import {defaultGap, shapeTypesString} from './lib/consts';
 import Logger from './lib/log';
 import packageJson from '../package.json';
 import generateForOSMArea from './commands/generate_for_osm_area';
+import generateForOSMNodes from './commands/generate_for_osm_nodes';
 
 const logger = new Logger('Index');
 
@@ -120,6 +121,10 @@ async function main() {
 
         case 'osmarea':
             await generateForOSMArea({inputPath: filepath, outputFilepath, gap, name});
+            break;
+
+        case 'osmnodes':
+            await generateForOSMNodes({inputPath: filepath, outputFilepath, gap, name});
             break;
     }
 }

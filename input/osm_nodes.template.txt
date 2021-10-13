@@ -1,0 +1,6 @@
+[out:json];
+area[name="Sydney"][admin_level=7]->.boundaryarea;
+(
+  node(area.boundaryarea)[brand="McDonald's"];
+);
+out;
