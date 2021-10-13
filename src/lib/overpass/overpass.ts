@@ -1,4 +1,4 @@
-import axios, {AxiosResponse} from 'axios';
+import axios, {AxiosResponse, AxiosError} from 'axios';
 
 const api = 'https://lz4.overpass-api.de/api/interpreter';
 
@@ -77,9 +77,24 @@ export const query = async (
                 Overpass.Node | Overpass.Way | Overpass.RelationElement<Overpass.Way>
             >
         >
-    >(api, `data=${encodeURIComponent(overpassQL)}`, {
+    >(api, `data=${encodeURIComponent('[out:json];' + overpassQL)}`, {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded;',
         },
     });
+};
+
+export const caughtQuery: typeof query = async (overpassQL) => {
+    try {
+        return await query(overpassQL);
+    } catch (e) {
+        if (e.isAxiosError) {
+            const error: AxiosError = e;
+            throw new Error(
+                `Overpass query failed with status ${error.response?.status}\nResponse: ${error.response.data}`
+            );
+        } else {
+            throw e;
+        }
+    }
 };

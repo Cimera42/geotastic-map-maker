@@ -2,17 +2,15 @@ import generateDrops from './generate_drops';
 import {promises as fs} from 'fs';
 import Logger from '../lib/log';
 import {Point} from '../lib/geometry/common';
-import {getBounds, insideComplex} from '../lib/geometry/point_inside';
-import {generateGridPoints} from '../lib/geometry/bounds_grid';
 import {exportDropsCSV} from '../lib/geotastic/drops_csv';
-import {Overpass, query} from '../lib/overpass/overpass';
+import {caughtQuery, Overpass} from '../lib/overpass/overpass';
 
 const logger = new Logger('OSMArea');
 
 async function loadPointsFromOSM(filepath: string): Promise<Point[]> {
     const rawQuery = await fs.readFile(filepath, 'utf8');
 
-    const response = await query(rawQuery);
+    const response = await caughtQuery(rawQuery);
     const nodes = response.data.elements.filter(
         (element): element is Overpass.Node => element.type === 'node'
     );
