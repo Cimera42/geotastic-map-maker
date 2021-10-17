@@ -14,22 +14,25 @@ async function loadPolygonsFromOSM(filepath: string): Promise<Point[][]> {
     const rawQuery = await fs.readFile(filepath, 'utf8');
 
     const response = await caughtQuery(rawQuery);
-    const boundary = response.data.elements.find(
+    const boundaries = response.data.elements.filter(
         (element): element is Overpass.RelationElement<Overpass.Way> => element.type === 'relation'
     );
-    if (!boundary) {
+    if (!boundaries) {
         throw new Error(`No boundary found in results of '${filepath}' query.`);
     }
 
-    const boundaryWays = boundary.members.filter(
-        (member): member is Overpass.Way => member.type === 'way' && member.role === 'outer'
+    const boundariesWays = boundaries.map((boundary) =>
+        boundary.members.filter(
+            (member): member is Overpass.Way => member.type === 'way' && member.role === 'outer'
+        )
     );
 
-    const merged = mergeLoops(boundaryWays);
-    const polygons = merged.map((loop): Point[] =>
-        loop.map((v): Point => ({lat: v.lat, lng: v.lon}))
+    const mergedBoundaries = boundariesWays.map((boundaryWays) => mergeLoops(boundaryWays));
+    const polygons = mergedBoundaries.map((merged) =>
+        merged.map((loop): Point[] => loop.map((v): Point => ({lat: v.lat, lng: v.lon})))
     );
-    const sortedPolygons = polygons.sort((a, b) => b.length - a.length);
+
+    const sortedPolygons = polygons.flatMap((v) => v).sort((a, b) => b.length - a.length);
 
     logger.info(
         `Loaded ${sortedPolygons.length} polygon${
