@@ -1,0 +1,39 @@
+(
+  relation(6303077); // Wollongong
+  relation(6287823); // Wollondilly
+  relation(6299568); // Blue Mountains City Council
+  relation(6222206); // Hawkesbury City Council
+  relation(6217858); // Blacktown City Council
+  relation(6282698); // Penrith City Council
+  relation(6217262); // City of Parramatta Council
+  relation(6212438); // Fairfield City Council
+  relation(6219220); // The Hills Shire Council
+  relation(6210847); // Strathfield Municipal Council
+  relation(6201664); // Randwick City Council
+  relation(1251066); // Council of the City of Sydney
+  relation(6290069); // Camden Council
+  relation(6290704); // Campbelltown City Council
+  relation(6212442); // Liverpool City Council
+  relation(6195207); // Central Coast Council
+  relation(6218957); // The Council of the Shire of Hornsby
+  relation(2978550); // Northern Beaches Council
+  relation(6228261); // Ku-ring-gai Council
+  relation(6217271); // City of Canada Bay Council
+  relation(2162244); // Canterbury-Bankstown Council
+  relation(6205809); // Georges River Council
+  relation(6230051); // Willoughby City Council
+  relation(6206752); // Sutherland Shire Council
+  relation(6210859); // Cumberland City Council
+  relation(6218884); // Council of the City of Ryde
+  relation(6273237); // The Council of the Municipality of Hunters Hill
+  relation(1251053); // Inner West Council
+  relation(7038238); // Bayside Council
+  relation(6203650); // Woollahra Municipal Council
+  relation(6203556); // Waverley Council
+  relation(6276645); // Mosman Municipal Council
+  relation(6275976); // North Sydney Council
+  relation(2161967); // Burwood Council
+  relation(6275980); // Lane Cove Municipal Council
+);map_to_area;
+node(area)[brand="McDonald's"];
+out geom;
