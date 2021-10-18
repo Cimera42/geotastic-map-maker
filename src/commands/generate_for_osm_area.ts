@@ -12,6 +12,8 @@ import {plural} from '../lib/utils';
 const logger = new Logger('OSMArea');
 
 async function loadPolygonsFromOSM(filepath: string): Promise<Point[][]> {
+    logger.info(`Querying Overpass for areas with ${filepath}`);
+
     const rawQuery = await fs.readFile(filepath, 'utf8');
 
     const response = await caughtQuery(rawQuery);

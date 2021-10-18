@@ -6,9 +6,11 @@ import {exportDropsCSV} from '../lib/geotastic/drops_csv';
 import {caughtQuery, Overpass} from '../lib/overpass/overpass';
 import {plural} from '../lib/utils';
 
-const logger = new Logger('OSMArea');
+const logger = new Logger('OSMNodes');
 
 async function loadPointsFromOSM(filepath: string): Promise<Point[]> {
+    logger.info(`Querying Overpass for nodes with ${filepath}`);
+
     const rawQuery = await fs.readFile(filepath, 'utf8');
 
     const response = await caughtQuery(rawQuery);
