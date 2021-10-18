@@ -6,6 +6,7 @@ import {getBounds, insideComplex} from '../lib/geometry/point_inside';
 import {generateGridPoints} from '../lib/geometry/bounds_grid';
 import {exportDropsCSV} from '../lib/geotastic/drops_csv';
 import path from 'path';
+import {plural} from '../lib/utils';
 
 const logger = new Logger('Polygon');
 
@@ -56,7 +57,7 @@ async function loadPolygonFromCSV(filepath: string): Promise<Point[]> {
     const allMatch = matchedLines.every((v) => v);
     if (!allMatch) {
         throw new Error(
-            `Misformed CSV ('${path.basename(
+            `Malformed CSV ('${path.basename(
                 filepath
             )}'), see 'polygon.template.csv' or README.md for the correct format.`
         );
@@ -69,7 +70,11 @@ async function loadPolygonFromCSV(filepath: string): Promise<Point[]> {
         };
     });
 
-    logger.info(`Loaded polygon with ${parsedPolygonPoints.length} points.`);
+    logger.info(
+        `Loaded polygon with ${parsedPolygonPoints.length} point${plural(
+            parsedPolygonPoints.length
+        )}.`
+    );
 
     return parsedPolygonPoints;
 }
@@ -89,7 +94,9 @@ async function generateForPolygon(args: PolygonArgs): Promise<void> {
         const points = generateGridPoints(bounds, args.gap);
         const filteredPoints = points.filter((p) => insideComplex(polygon, p));
         logger.info(
-            `Filtered ${points.length} to ${filteredPoints.length} points with polygon shape.`
+            `Filtered ${points.length} to ${filteredPoints.length} point${plural(
+                filteredPoints.length
+            )} with polygon shape.`
         );
 
         const drops = await generateDrops(filteredPoints);

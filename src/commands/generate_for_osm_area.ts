@@ -7,6 +7,7 @@ import {generateGridPoints} from '../lib/geometry/bounds_grid';
 import {exportDropsCSV} from '../lib/geotastic/drops_csv';
 import {caughtQuery, Overpass} from '../lib/overpass/overpass';
 import mergeLoops from '../lib/overpass/merge_loops';
+import {plural} from '../lib/utils';
 
 const logger = new Logger('OSMArea');
 
@@ -18,7 +19,7 @@ async function loadPolygonsFromOSM(filepath: string): Promise<Point[][]> {
         (element): element is Overpass.RelationElement<Overpass.Way> => element.type === 'relation'
     );
     if (!boundaries) {
-        throw new Error(`No boundary found in results of '${filepath}' query.`);
+        throw new Error(`No boundaries found in results of '${filepath}' query.`);
     }
 
     const boundariesWays = boundaries.map((boundary) =>
@@ -35,9 +36,11 @@ async function loadPolygonsFromOSM(filepath: string): Promise<Point[][]> {
     const sortedPolygons = polygons.flatMap((v) => v).sort((a, b) => b.length - a.length);
 
     logger.info(
-        `Loaded ${sortedPolygons.length} polygon${
-            sortedPolygons.length === 1 ? '' : 's'
-        } from OSM area.${sortedPolygons.map((p, i) => `\n\t${i + 1}: ${p.length} points`)}`
+        `Loaded ${sortedPolygons.length} polygon${plural(
+            sortedPolygons.length
+        )} from OSM area.${sortedPolygons
+            .map((p, i) => `\n\t${i + 1}: ${p.length} point${plural(p.length)}`)
+            .join('')}`
     );
 
     return sortedPolygons;
@@ -60,11 +63,15 @@ async function generateForOSMArea(args: OSMAreaArgs): Promise<void> {
             const points = generateGridPoints(bounds, args.gap);
             const filteredPoints = points.filter((p) => insideComplex(polygon, p));
             logger.info(
-                `Filtered ${points.length} to ${filteredPoints.length} points with polygon shape.`
+                `Filtered ${points.length} to ${filteredPoints.length} point${plural(
+                    filteredPoints.length
+                )} with polygon shape.`
             );
             return [...prevPoints, ...filteredPoints];
         }, []);
-        logger.info(`Overall there are ${generatedPoints.length} points`);
+        logger.info(
+            `Overall there are ${generatedPoints.length} point${plural(generatedPoints.length)}`
+        );
 
         const drops = await generateDrops(generatedPoints);
         await exportDropsCSV(drops, {

@@ -42,3 +42,12 @@ export function getFormattedDate(date: Date, format: string): string {
         .replace(/m/g, date.getMinutes().toString().padStart(2, '0'))
         .replace(/s/g, date.getSeconds().toString().padStart(2, '0'));
 }
+
+/**
+ * Return 's' if required for a count
+ * @param count Count to check
+ * @returns 's' or empty string
+ */
+export function plural(count: number): string {
+    return count === 1 ? '' : 's';
+}

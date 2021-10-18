@@ -19,7 +19,7 @@ async function loadBoundsFromJSON(filepath: string): Promise<BoundingBox> {
     } catch (e) {
         if (e instanceof SyntaxError) {
             throw new Error(
-                `Misformed JSON ('${path.basename(
+                `Malformed JSON ('${path.basename(
                     filepath
                 )}'), see 'bounds.template.json' or README.md for the correct format.`
             );

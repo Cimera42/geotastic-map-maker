@@ -4,6 +4,7 @@ import Logger from '../lib/log';
 import {Point} from '../lib/geometry/common';
 import {exportDropsCSV} from '../lib/geotastic/drops_csv';
 import {caughtQuery, Overpass} from '../lib/overpass/overpass';
+import {plural} from '../lib/utils';
 
 const logger = new Logger('OSMArea');
 
@@ -15,12 +16,12 @@ async function loadPointsFromOSM(filepath: string): Promise<Point[]> {
         (element): element is Overpass.Node => element.type === 'node'
     );
     if (!nodes) {
-        throw new Error(`No boundary found in results of '${filepath}' query.`);
+        throw new Error(`No nodes found in results of '${filepath}' query.`);
     }
 
     const points = nodes.map((v): Point => ({lat: v.lat, lng: v.lon}));
 
-    logger.info(`Loaded ${points.length} point${points.length === 1 ? '' : 's'} from OSM nodes.`);
+    logger.info(`Loaded ${points.length} point${plural(points.length)} from OSM nodes.`);
 
     return points;
 }
