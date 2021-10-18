@@ -7,7 +7,7 @@ import {generateGridPoints} from '../lib/geometry/bounds_grid';
 import {exportDropsCSV} from '../lib/geotastic/drops_csv';
 import {caughtQuery, Overpass} from '../lib/overpass/overpass';
 import mergeLoops from '../lib/overpass/merge_loops';
-import {plural} from '../lib/utils';
+import {digitCount, plural} from '../lib/utils';
 
 const logger = new Logger('OSMArea');
 
@@ -37,11 +37,16 @@ async function loadPolygonsFromOSM(filepath: string): Promise<Point[][]> {
 
     const sortedPolygons = polygons.flatMap((v) => v).sort((a, b) => b.length - a.length);
 
+    const polyCnt = sortedPolygons.length;
+    const digitLength = digitCount(polyCnt);
     logger.info(
-        `Loaded ${sortedPolygons.length} polygon${plural(
-            sortedPolygons.length
-        )} from OSM area.${sortedPolygons
-            .map((p, i) => `\n\t${i + 1}: ${p.length} point${plural(p.length)}`)
+        `Loaded ${polyCnt} polygon${plural(polyCnt)} from OSM area.${sortedPolygons
+            .map(
+                (p, i) =>
+                    `\n\t${(i + 1).toString().padStart(digitLength, ' ')}: ${
+                        p.length
+                    } point${plural(p.length)}`
+            )
             .join('')}`
     );
 
