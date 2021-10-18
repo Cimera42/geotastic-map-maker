@@ -91,7 +91,9 @@ export const caughtQuery: typeof query = async (overpassQL) => {
         if (e.isAxiosError) {
             const error: AxiosError = e;
             throw new Error(
-                `Overpass query failed with status ${error.response?.status}\nResponse: ${error.response.data}`
+                `Overpass query failed with status ${
+                    error.response?.status ?? '<No Status>'
+                }\nResponse: ${error.response?.data ?? '<No Response>'}`
             );
         } else {
             throw e;
