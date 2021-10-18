@@ -8,6 +8,7 @@ A script to generate maps files for importing into [Geotastic](https://geotastic
 |[Usage](#usage)|
 |[Import into Geotastic](#import-into-geotastic)|
 |[Theory of operation](#theory-of-operation)|
+|[Attribution](#attribution)|
 
 ## Installation
 
@@ -25,8 +26,7 @@ A script to generate maps files for importing into [Geotastic](https://geotastic
 Before running, a data source must be created. The supported sources are:
 - [Rectangular bounding box](#bounding-box)
 - [Polygon](#polygon)
-- [OpenStreetMap areas](#areas)
-- [OpenStreetMap nodes](#nodes)
+- [OpenStreetMap sources](#openstreetmap-sources)
 
 Follow the below instructions to create your desired source.
 
