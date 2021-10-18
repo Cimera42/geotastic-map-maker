@@ -47,7 +47,7 @@ This file defines the top, bottom, left, and right of the bounding box in latitu
 #### Polygon
 
 A sample polygon file can be found in the `input` folder named `polygon.template.json`.
-This file lists all the points of the polygon in order (clockwise / anti-clockwise both work).
+This file lists all the points of the polygon in order.
 
 An online tool such as https://www.keene.edu/campus/maps/tool/ can be used to create this list of points.
 
