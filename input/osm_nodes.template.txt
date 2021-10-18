@@ -1,0 +1,3 @@
+area[name="Sydney"][admin_level=7];
+node(area)[brand="McDonald's"];
+out;

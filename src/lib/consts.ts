@@ -11,7 +11,7 @@ export const streetviewDistance = 50;
 // Default gap between generated grid points
 export const defaultGap = 500;
 
-// Shape types for CLI
-export const shapeTypes = ['box', 'polygon'] as const;
-export const shapeTypesString = shapeTypes.map((v) => `'${v}'`).join(', ');
-export type ShapeType = typeof shapeTypes[number];
+// Source types for CLI
+export const sourceTypes = ['box', 'polygon', 'osmarea', 'osmnodes'] as const;
+export const sourceTypesString = sourceTypes.map((v) => `'${v}'`).join(', ');
+export type SourceType = typeof sourceTypes[number];

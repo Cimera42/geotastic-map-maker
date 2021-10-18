@@ -2,18 +2,20 @@ import {ArgError} from 'arg';
 import fs from 'fs';
 import path from 'path';
 import pathValidation from 'path-validation';
-import {ShapeType, shapeTypes, shapeTypesString} from './consts';
+import {SourceType, sourceTypes, sourceTypesString} from './consts';
 
 /**
- * Validate argument is a valid shape
- * @param value Shape name to validate
- * @returns Valid shape
+ * Validate argument is a valid source type
+ * @param value Source type name to validate
+ * @returns Valid source type
  */
-export function validateShape(value: string): ShapeType {
-    if (value === shapeTypes[0] || value === shapeTypes[1]) {
-        return value;
+export function validateSourceType(value: string): SourceType {
+    for (let i = 0; i < sourceTypes.length; i++) {
+        if (value === sourceTypes[i]) {
+            return value;
+        }
     }
-    throw new ArgError(`Shape must be one of [${shapeTypesString}].`, 'ARG_INVALID_CHOICE');
+    throw new ArgError(`Source must be one of [${sourceTypesString}].`, 'ARG_INVALID_CHOICE');
 }
 
 /**

@@ -25,7 +25,14 @@ export interface StreetviewResponse {
     date: string;
     location: Point;
     pano_id: string;
-    status: string; // OK | ZERO_RESULTS | REQUEST_DENIED
+    status:
+        | 'OK'
+        | 'ZERO_RESULTS'
+        | 'NOT_FOUND'
+        | 'OVER_QUERY_LIMIT'
+        | 'REQUEST_DENIED'
+        | 'INVALID_REQUEST'
+        | 'UNKNOWN_ERROR';
 }
 
 /**

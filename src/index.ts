@@ -2,10 +2,12 @@ import arg from 'arg';
 import chalk from 'chalk';
 import generateForBox from './commands/generate_for_box';
 import generateForPolygon from './commands/generate_for_polygon';
-import {validateCanCreateFile, validateFileExists, validateShape} from './lib/arg_validation';
-import {defaultGap, shapeTypesString} from './lib/consts';
+import {validateCanCreateFile, validateFileExists, validateSourceType} from './lib/arg_validation';
+import {defaultGap, sourceTypesString} from './lib/consts';
 import Logger from './lib/log';
 import packageJson from '../package.json';
+import generateForOSMArea from './commands/generate_for_osm_area';
+import generateForOSMNodes from './commands/generate_for_osm_nodes';
 
 const logger = new Logger('Index');
 
@@ -21,13 +23,13 @@ function alignToSides(left: string, right: string, fullWidth = 80) {
 
 const helpMessage = [
     '',
-    'Usage: geotastic-map-maker --shape <shape> --file <file> [--gap <gap>]',
+    'Usage: geotastic-map-maker --source <source type> --file <file> [--gap <gap>]',
     '',
-    'Generate Geotastic drops CSV from a shape',
+    'Generate Geotastic drops CSV from a data souce',
     '',
     'Options:',
-    alignToSides('  -s, --shape    Boundary shape to use', `[${shapeTypesString}] [required]`),
-    alignToSides('  -i, --input    Path to shape input file', '[string] [required]'),
+    alignToSides('  -s, --source   Source type to use', `[${sourceTypesString}] [required]`),
+    alignToSides('  -i, --input    Path to input source file', '[string] [required]'),
     alignToSides('  -o, --output   Path to output file', '[string] [optional]'),
     alignToSides('  -n, --name     Filename suffix if output not specified', '[string] [optional]'),
     alignToSides(
@@ -46,7 +48,7 @@ async function main() {
         {
             '--help': Boolean,
             '--version': Boolean,
-            '--shape': validateShape,
+            '--source': validateSourceType,
             '--input': validateFileExists,
             '--output': validateCanCreateFile,
             '--gap': Number,
@@ -54,7 +56,7 @@ async function main() {
 
             '-h': '--help',
             '-g': '--gap',
-            '-s': '--shape',
+            '-s': '--source',
             '-i': '--input',
             '-o': '--output',
             '-n': '--name',
@@ -82,11 +84,11 @@ async function main() {
         ),
     ];
 
-    if (!argErrors['--shape'] && !args['--shape']) {
-        errors.push('Must specify a shape (--shape).');
+    if (!argErrors['--source'] && !args['--source']) {
+        errors.push('Must specify a source type (--source).');
     }
     if (!argErrors['--input'] && !args['--input']) {
-        errors.push('Must specify a shape input file (--input).');
+        errors.push('Must specify an input source file (--input).');
     }
     if (errors.length) {
         errors.forEach((e) => {
@@ -97,7 +99,7 @@ async function main() {
     }
 
     const gap = args['--gap'] || defaultGap;
-    const shape = args['--shape'];
+    const sourceType = args['--source'];
     const filepath = args['--input'];
     const outputFilepath = args['--output'];
     const name = args['--name'];
@@ -108,13 +110,21 @@ async function main() {
         );
     }
 
-    switch (shape) {
+    switch (sourceType) {
         case 'box':
             await generateForBox({inputPath: filepath, outputFilepath, gap, name});
             break;
 
         case 'polygon':
             await generateForPolygon({inputPath: filepath, outputFilepath, gap, name});
+            break;
+
+        case 'osmarea':
+            await generateForOSMArea({inputPath: filepath, outputFilepath, gap, name});
+            break;
+
+        case 'osmnodes':
+            await generateForOSMNodes({inputPath: filepath, outputFilepath, gap, name});
             break;
     }
 }

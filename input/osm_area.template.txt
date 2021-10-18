@@ -1,0 +1,2 @@
+relation[name="Sydney"][boundary="administrative"][admin_level=7];
+out geom;
