@@ -12,18 +12,23 @@ const logger = new Logger('GenerateDrops');
  * @param streetview Response from Street View Metadata API
  * @returns Formatted drop
  */
-export function streetviewToDrop(streetview: StreetviewResponse): Drop {
+export function streetviewToDrop(streetview: StreetviewResponse, index: number): Drop {
     // TODO dont hardcode country
     return [
+        index,
         streetview.location.lat,
         streetview.location.lng,
         'au',
+        '',
         '0',
         '',
         0,
         0,
         0,
         streetview.pano_id,
+        0,
+        0,
+        1,
     ];
 }
 
