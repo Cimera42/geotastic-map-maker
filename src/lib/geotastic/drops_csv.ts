@@ -5,16 +5,38 @@ import {getFormattedDate} from '../utils';
 
 const logger = new Logger('DropsCSV');
 
+type BoolInt = 0 | 1;
 export type Drop = [
+    id: number,
     lat: number,
     lng: number,
     countryCode: string,
+    subCode: string,
     wikipediaPageId: string,
     title: string,
-    heading: number,
     pitch: number,
+    heading: number,
     zoom: number,
-    panoramaId: string
+    panoramaId: string,
+    hideCompass: BoolInt,
+    isLandmarkTip: BoolInt,
+    active: BoolInt
+];
+const CsvHeaders = [
+    'id',
+    'lat',
+    'lng',
+    'code',
+    'subCode',
+    'wikiId',
+    'title',
+    'pitch',
+    'heading',
+    'zoom',
+    'panoId',
+    'hideCompass',
+    'isLandmarkTip',
+    'active',
 ];
 
 function getFilenameDatetime(): string {
@@ -44,7 +66,7 @@ export async function exportDropsCSV(
         }
     }
 
-    const csvString = drops.map((drop) => drop.join(',')).join('\n');
+    const csvString = `${CsvHeaders.join(',')}\n${drops.map((drop) => drop.join(',')).join('\n')}`;
 
     const filename = options.outputFilepath
         ? path.basename(options.outputFilepath)
