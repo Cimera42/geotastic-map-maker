@@ -1,6 +1,6 @@
 # geotastic-map-maker
 
-A script to generate maps files for importing into [Geotastic](https://geotastic.de/).
+A script to generate maps files for importing into [Geotastic](https://geotastic.net/).
 
 |Table of Contents|
 |-|
@@ -9,6 +9,12 @@ A script to generate maps files for importing into [Geotastic](https://geotastic
 |[Import into Geotastic](#import-into-geotastic)|
 |[Theory of operation](#theory-of-operation)|
 |[Attribution](#attribution)|
+
+## ⚠️ Geotastic costs
+
+To help Geotastic with reducing their Google API expenses, please set up a personal API key on your account. See the help page for more details and instructions: https://geotastic.net/help-out/own-api-key
+
+Also consider [donating](https://geotastic.net/help-out/donations) to help out and get additional player slots for your games.
 
 ## Installation
 
@@ -120,8 +126,8 @@ yarn start --source polygon --input ./input/polygon.template.csv --output ./outp
 
 To create a custom map and import drop data:
 
-1. Login to [Geotastic](https://geotastic.de)
-2. Click on your profile in the top-right, and choose ["Custom Map Editor"](https://geotastic.de/custom-map-editor)
+1. Login to [Geotastic](https://geotastic.net)
+2. Click on your profile in the top-right, and choose ["Map Editor"](https://geotastic.net/map-editor/maps)
 3. Click "CREATE NEW MAP" and enter the desired details
    - The overall size of the map is printed when the script runs. I'd recommended setting the `Default Distance Threshold` to half that size.
 4. Right click the new map and select "Import drop data"
